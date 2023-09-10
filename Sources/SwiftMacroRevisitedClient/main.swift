@@ -1,8 +1,34 @@
 import SwiftMacroRevisited
+import SwiftUI
+import COW
 
-let a = 17
-let b = 25
+let _ = #Color(0xFFEEAA) // Compiled
 
-let (result, code) = #stringify(a + b)
+/* Not compiled:
+let _ = #Color(0xFFEEA) // Invalid RGB, not compiled
+*/
 
-print("The value \(result) was produced by the code \"\(code)\"")
+func foo(_ bar: Int?) {
+  #unwrap(bar) {
+    print(bar)
+  }
+}
+
+@COW
+struct User {
+
+  var name: String
+
+  var avatar: URL
+
+  var avatarsInDifferentScales: [Int : URL]
+
+  var userID: String
+
+  var socialMedias: [String]
+
+  var brief: String
+
+  // ...
+
+}

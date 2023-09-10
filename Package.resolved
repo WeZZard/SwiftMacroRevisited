@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "cowmacro",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/WeZZard/COWMacro.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "74b705998ee6b63b92f95e579c26a81257e9c745"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-syntax.git",
+      "state" : {
+        "revision" : "67c5007099d9ffdd292f421f81f4efe5ee42963e",
+        "version" : "509.0.0-swift-DEVELOPMENT-SNAPSHOT-2023-07-10-a"
+      }
+    }
+  ],
+  "version" : 2
+}

@@ -1,11 +1,37 @@
-// The Swift Programming Language
-// https://docs.swift.org/swift-book
+import SwiftUI
 
-/// A macro that produces both a value and a string containing the
-/// source code that generated the value. For example,
-///
-///     #stringify(x + y)
-///
-/// produces a tuple `(x + y, "x + y")`.
 @freestanding(expression)
-public macro stringify<T>(_ value: T) -> (T, String) = #externalMacro(module: "SwiftMacroRevisitedMacros", type: "StringifyMacro")
+public macro Color(
+  _ hex: UInt
+) -> SwiftUI.Color = #externalMacro(
+  module: "SwiftMacroRevisitedMacros",
+  type: "SwiftUIColorHexadecimalLiteralMacro"
+)
+
+@freestanding(expression)
+public macro Color(
+  _ colorSpace: SwiftUI.Color.RGBColorSpace = .sRGB,
+  _ hex: UInt
+) -> SwiftUI.Color = #externalMacro(
+  module: "SwiftMacroRevisitedMacros",
+  type: "SwiftUIColorHexadecimalLiteralMacro"
+)
+
+#if !USE_VARIADIC_GENERICS_UNWRAP
+@freestanding(declaration, names: arbitrary)
+public macro unwrap<FirstWrapped, each Wrapped>(
+  _ firstValue: FirstWrapped?,
+  _ value: repeat (each Wrapped)?,
+  body: () -> Void
+) = #externalMacro(module: "SwiftMacroRevisitedMacros", type: "UnwrapMacro")
+#else
+@freestanding(declaration, names: arbitrary)
+public macro unwrap(_ values: Any..., body: () -> Void) = #externalMacro(module: "SwiftMacroRevisitedMacros", type: "UnwrapMacro")
+#endif
+public func reportFailedUnwrapping(
+  _ message: String,
+  file: StaticString = #file,
+  line: UInt = #line
+) {
+  
+}
