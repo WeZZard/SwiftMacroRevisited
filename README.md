@@ -21,3 +21,6 @@ The `POST-TAG` could be:
 - strengths-and-essence
 - traps-and-pitfalls
 
+## License
+
+WTFPL
