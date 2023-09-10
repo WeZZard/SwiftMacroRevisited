@@ -35,3 +35,18 @@ public func reportFailedUnwrapping(
 ) {
   
 }
+
+@attached(member, names: arbitrary)
+public macro DictionaryLike() = #externalMacro(
+  module: "SwiftMacroRevisitedMacros",
+  type: "DictionaryLikeMacro"
+)
+
+@attached(accessor)
+public macro UseDictionaryStorage() = #externalMacro(
+  module: "SwiftMacroRevisitedMacros",
+  type: "UseDictionaryStorageMacro"
+)
+
+@freestanding(declaration, names: arbitrary)
+public macro uniqueName() = #externalMacro(module: "SwiftMacroRevisitedMacros", type: "UniqueNameMacro")

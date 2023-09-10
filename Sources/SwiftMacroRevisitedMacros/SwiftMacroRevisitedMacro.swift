@@ -161,12 +161,83 @@ public struct UnwrapMacro: DeclarationMacro {
   
 }
 
+public struct DictionaryLikeMacro: MemberMacro {
+  
+  public static func expansion<Declaration, Context>(of node: AttributeSyntax, providingMembersOf declaration: Declaration, in context: Context) throws -> [DeclSyntax] where Declaration : DeclGroupSyntax, Context : MacroExpansionContext {
+    return [
+      """
+      var _$storage: [String : Any] = [:]
+      
+      subscript(_ key: String) -> Any? {
+        get {
+          return _$storage[key]
+        }
+        set {
+          _$storage[key] = newValue
+        }
+      }
+      """
+    ]
+  }
+  
+}
+
+public struct UseDictionaryStorageMacro: AccessorMacro {
+  
+  public static func expansion(of node: AttributeSyntax, providingAccessorsOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) throws -> [AccessorDeclSyntax] {
+    guard let varDecl = declaration.as(VariableDeclSyntax.self) else {
+      return []
+    }
+    // This is a demo project. We don't consider fix the case that a property
+    // declaration have multiple variable bindings.
+    guard let firstBinding = varDecl.bindings.first else {
+      return []
+    }
+    guard let identPattern = firstBinding.pattern.as(IdentifierPatternSyntax.self) else {
+      return []
+    }
+    guard let type = firstBinding.typeAnnotation?.type else {
+      return []
+    }
+    let key = identPattern.identifier.trimmed
+    let keyString = StringLiteralExprSyntax(content: key.text)
+    return [
+      """
+      get {
+        return _$storage[\(keyString)] as? \(type)
+      }
+      """,
+      """
+      set {
+        _$storage[\(keyString)] = newValue
+      }
+      """
+    ]
+  }
+  
+}
+
+public struct UniqueNameMacro: DeclarationMacro {
+  
+  public static func expansion(of node: some FreestandingMacroExpansionSyntax, in context: some MacroExpansionContext) throws -> [DeclSyntax] {
+    return [
+      """
+      let \(context.makeUniqueName("")) = 0
+      """
+    ]
+  }
+  
+}
+
 @main
 struct SwiftMacroRevisitedPlugin: CompilerPlugin {
   
     let providingMacros: [Macro.Type] = [
       SwiftUIColorHexadecimalLiteralMacro.self,
       UnwrapMacro.self,
+      DictionaryLikeMacro.self,
+      UseDictionaryStorageMacro.self,
+      UniqueNameMacro.self,
     ]
   
 }
